@@ -1,0 +1,33 @@
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+RUN npm run build
+
+# -----------------------------------------
+
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Install kubectl
+RUN apk add --no-cache curl && \
+    curl -LO "https://dl.k8s.io/release/v1.30.2/bin/linux/amd64/kubectl" && \
+    chmod +x kubectl && \
+    mv kubectl /usr/local/bin/kubectl
+
+RUN addgroup -S appgroup && \
+    adduser -S appuser -G appgroup
+
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+
+USER appuser
+
+CMD ["node", "dist/index.js"]

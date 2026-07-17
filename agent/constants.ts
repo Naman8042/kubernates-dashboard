@@ -1,0 +1,2 @@
+export const RECONNECT_DELAY = 5000;
+export const HEARTBEAT_INTERVAL = 20000;

@@ -1,0 +1,127 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Organization {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+
+  users               User[]
+  clusters            Cluster[]
+  integrations        Integration[]
+  integrationRequests IntegrationRequest[]
+
+  alerts Alert[]
+}
+
+model User {
+  id           Int    @id @default(autoincrement())
+  name         String
+  email        String @unique
+  passwordHash String
+  role         String @default("owner")
+
+  organizationId Int
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model Cluster {
+  id           Int       @id @default(autoincrement())
+  name         String
+  clusterToken String    @unique
+  status       String    @default("offline")
+  lastSeen     DateTime?
+
+  organizationId Int
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  alerts Alert[]
+}
+
+model Integration {
+  id Int @id @default(autoincrement())
+
+  organizationId Int
+
+  platform String
+
+  externalId String
+
+  guildId   String?
+  channelId String?
+
+  username String?
+
+  verified Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+}
+
+model IntegrationRequest {
+  id Int @id @default(autoincrement())
+
+  code String @unique
+
+  platform String
+
+  organizationId Int
+
+  expiresAt DateTime
+
+  used Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+}
+
+model AuditLog {
+  id             Int       @id @default(autoincrement())
+
+  platform       String
+  externalId     String
+
+  command        String
+
+  status         String
+  response       String?
+
+  clusterId      Int
+  organizationId Int
+
+  createdAt      DateTime @default(now())
+}
+
+model Alert {
+    id              String   @id @default(cuid())
+    clusterId       Int
+    organizationId  Int
+    namespace       String
+    pod             String
+    severity        String?
+    status          String
+    message         String?
+    active          Boolean  @default(true)
+    firstSeenAt     DateTime @default(now()) // Add this if it exists in DB
+    lastSeenAt      DateTime @default(now())
+    lastAlertSentAt DateTime @default(now())
+    resolvedAt      DateTime? @default(now())
+    createdAt       DateTime @default(now())
+    updatedAt       DateTime @default(now())
+
+    cluster         Cluster  @relation(fields: [clusterId], references: [id])
+    organization    Organization @relation(fields: [organizationId], references: [id])
+
+    @@unique([clusterId, namespace, pod, status])
+}
