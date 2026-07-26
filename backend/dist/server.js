@@ -9,7 +9,6 @@ import { PORT } from "./config.js";
 import { initWS } from "./websockets/ws.server.js";
 import { startHeartbeatMonitor } from "./alerts/heartbeat.monitor.js";
 import { initTelegramBot } from "./telegram/telegram.service.js";
-import { initSlackBot } from "./slack/slack.service.js";
 import { initDiscordBot } from "./discord/discord.service.js";
 // Middleware Imports
 import auth from "./middleware/auth.js";
@@ -48,7 +47,7 @@ const server = createServer(app);
 initWS(server);
 startHeartbeatMonitor();
 initTelegramBot();
-await initSlackBot();
+// await initSlackBot();
 await initDiscordBot();
 // Kubernetes Feature Routes
 app.use("/pods", auth, createPodsRouter());

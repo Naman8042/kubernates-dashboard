@@ -1,6 +1,6 @@
 import TelegramBot from "node-telegram-bot-api";
-import { TELEGRAM_BOT_TOKEN } from "../config.js";
-const bot = new TelegramBot(TELEGRAM_BOT_TOKEN);
+const token = process.env.TELEGRAM_BOT_TOKEN;
+const bot = new TelegramBot(token);
 export async function sendTelegramAlert(chatId, message) {
     try {
         console.log(chatId, message);

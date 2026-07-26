@@ -1,8 +1,8 @@
 import TelegramBot from "node-telegram-bot-api";
-import { TELEGRAM_BOT_TOKEN } from "../config.js";
 import { handleTelegramCommand } from "./telegram.commands.js";
 import { findIntegration } from "../integration/integration.service.js";
-const bot = new TelegramBot(TELEGRAM_BOT_TOKEN, {
+const token = process.env.TELEGRAM_BOT_TOKEN;
+const bot = new TelegramBot(token, {
     polling: true,
 });
 export function initTelegramBot() {

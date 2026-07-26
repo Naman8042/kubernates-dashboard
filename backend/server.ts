@@ -56,7 +56,7 @@ const server: HttpServer = createServer(app);
 initWS(server);
 startHeartbeatMonitor();
 initTelegramBot();
-await initSlackBot();
+// await initSlackBot();
 await initDiscordBot();
 
 // Kubernetes Feature Routes
