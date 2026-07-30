@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { BACKEND_URL } from "../config";
 
 import {
   Shield,
@@ -36,7 +37,7 @@ export default function Signup() {
       setLoading(true);
 
       await axios.post(
-        "/auth/signup",
+         `${BACKEND_URL}/api/auth/register`,
         {
           name: form.name,
           organizationName:
